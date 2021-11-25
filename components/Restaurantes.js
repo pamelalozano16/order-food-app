@@ -18,36 +18,71 @@ const Footer = (props) => (
   </View>
 );
 
-const createCards = (loc) => {
-  let ar = [...Array(21).keys()];
+const createImages = async () => {
   let result = [];
-
-  ar.map(async (number) => {
+  for (let i = 0; i < 21; i++) {
     try {
       let res = await axios.get("https://foodish-api.herokuapp.com/api/");
-      result.push(
-        <Card
-          style={styles.card}
-          key={number}
-          header={Header({ number: number, loc: loc })}
-          footer={Footer}
-        >
-          <Image
-            source={{ uri: res.data.image }}
-            resizeMode="cover"
-            style={styles.image}
-          ></Image>
-        </Card>
-      );
+      result.push(res.data.image);
     } catch (error) {
       console.log("Error retrieving image", error);
     }
-  });
+  }
+  return result;
+};
+
+const createCards = (loc) => {
+  const [images, setImages] = useState([]);
+  useEffect(async () => {
+    let getImages = await createImages();
+    setImages(getImages);
+  }, []);
+
+  let result = [];
+
+  for (let i = 0; i < 21; i++) {
+    try {
+      result.push(
+        <Card
+          style={styles.card}
+          key={i}
+          header={Header({ number: i, loc: loc })}
+          footer={Footer}
+        >
+          {images[i] ? (
+            <Image
+              source={{ uri: images[i] }}
+              resizeMode="cover"
+              style={styles.image}
+            ></Image>
+          ) : (
+            <Layout
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                margin: 10,
+              }}
+            >
+              <Spinner />
+            </Layout>
+          )}
+        </Card>
+      );
+    } catch (error) {
+      console.log("Error creating cards", error);
+    }
+  }
   return result;
 };
 
 const Restaurantes = ({ navigation, route }) => {
-  const cards = createCards(route.params.loc);
+  let cards;
+  try {
+    cards = createCards(route.params.loc);
+  } catch (error) {
+    console.log(error);
+  }
 
   return (
     <React.Fragment>

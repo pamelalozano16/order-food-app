@@ -74,7 +74,7 @@ export default function App() {
     <ApplicationProvider {...eva} customMapping={mapping} theme={eva.light}>
       <NavigationContainer theme={DarkTheme}>
         <Stack.Navigator>
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Home"
             component={
               userLocation
@@ -93,7 +93,7 @@ export default function App() {
                   )
             }
             options={{ title: "Welcome!" }}
-          /> */}
+          />
           <Stack.Screen
             name="Restaurantes"
             component={Restaurantes}
