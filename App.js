@@ -1,63 +1,113 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import Constants from "expo-constants";
 import * as eva from "@eva-design/eva";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { mapping } from "./util/mapping";
+import axios from "axios";
+import Restaurantes from "./components/Restaurantes";
 import {
   ApplicationProvider,
   Button,
   Layout,
   Text,
-  Divider,
+  DarkTheme,
+  Spinner,
 } from "@ui-kitten/components";
-import axios from "axios";
 
-// You can import from local files
-import AssetExample from "./components/AssetExample";
+const Stack = createNativeStackNavigator();
 
-// or any pure javascript modules available in npm
-import { Card } from "react-native-paper";
+const HomeScreen = ({ navigation }) => {
+  return (
+    <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.btnContainer}>
+        <Text category="h1" style={styles.p}>
+          HOME
+        </Text>
 
-function getLoc() {
-  navigator.geolocation.getCurrentPosition(
-    async (data) => {
-      try {
-        const res = await axios.get(
-          "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
-            data.coords.latitude +
-            "&longitude=" +
-            data.coords.longitude +
-            "&localityLanguage=en"
-        );
-        console.log(res);
-      } catch (error) {
-        console.log("Error", error);
-      }
-      console.log(data);
-    },
-    (error) => {
-      console.log("error", error);
-    },
-    []
+        <Button
+          size="large"
+          style={styles.startButton}
+          onPress={async () => {
+            navigation.navigate("Restaurantes");
+          }}
+        >
+          START
+        </Button>
+      </View>
+    </Layout>
   );
-}
-
-const HomeScreen = () => (
-  <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text category="h1">HOME</Text>
-    <Button size="large" style={styles.startButton} onPress={() => getLoc()}>
-      START
-    </Button>
-    <Divider />
-    <Button status="control" size="large">
-      START
-    </Button>
-  </Layout>
-);
+};
 
 export default function App() {
+  const [userLocation, setUserLocation] = useState(undefined);
+  useEffect(() => {
+    getLoc();
+  });
+
+  function getLoc() {
+    navigator.geolocation.getCurrentPosition(
+      async (data) => {
+        try {
+          const res = await axios.get(
+            "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
+              data.coords.latitude +
+              "&longitude=" +
+              data.coords.longitude +
+              "&localityLanguage=en"
+          );
+          setUserLocation(res.data.locality + ", " + res.data.countryCode);
+          console.log(res.data);
+        } catch (error) {
+          console.log("Error", error);
+        }
+      },
+      (error) => {
+        console.log("error", error);
+      },
+      []
+    );
+  }
+
   return (
-    <ApplicationProvider {...eva} theme={eva.dark}>
-      <HomeScreen />
+    <ApplicationProvider {...eva} customMapping={mapping} theme={eva.light}>
+      <NavigationContainer theme={DarkTheme}>
+        <Stack.Navigator>
+          {/* <Stack.Screen
+            name="Home"
+            component={
+              userLocation
+                ? HomeScreen
+                : () => (
+                    <Layout
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={styles.p}>Obtaining your Location</Text>
+                      <Spinner size="giant" />
+                    </Layout>
+                  )
+            }
+            options={{ title: "Welcome!" }}
+          /> */}
+          <Stack.Screen
+            name="Restaurantes"
+            component={Restaurantes}
+            initialParams={{ loc: userLocation }}
+            options={
+              userLocation
+                ? {
+                    title: "Restaurantes en " + userLocation,
+                  }
+                : { title: "Restaurantes" }
+            }
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </ApplicationProvider>
   );
 }
@@ -69,6 +119,14 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: "#ecf0f1",
     padding: 8,
+  },
+  btnContainer: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 1,
+  },
+  p: {
+    margin: 10,
   },
   paragraph: {
     margin: 24,
