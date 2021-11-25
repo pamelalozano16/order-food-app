@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { Layout, Text, Card, Button, Spinner } from "@ui-kitten/components";
 import axios from "axios";
 
 const Header = (props) => (
   <View {...props}>
-    <Text category="h6">Restaurante {props.number}</Text>
+    <Text category="h6">Restaurante {props.number + 1}</Text>
     <Text category="s1">{props.loc}</Text>
   </View>
 );
@@ -85,11 +92,13 @@ const Restaurantes = ({ navigation, route }) => {
   }
 
   return (
-    <View>
-      <Layout style={styles.topContainer} level="1">
-        {cards}
-      </Layout>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <Layout style={styles.topContainer} level="1">
+          {cards}
+        </Layout>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -100,6 +109,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
   },
   topContainer: {
     flexDirection: "row",
