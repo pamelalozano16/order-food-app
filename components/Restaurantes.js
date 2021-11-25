@@ -20,7 +20,7 @@ const Footer = (props) => (
 
 const createImages = async () => {
   let result = [];
-  for (let i = 0; i < 21; i++) {
+  for (let i = 0; i < 20; i++) {
     try {
       let res = await axios.get("https://foodish-api.herokuapp.com/api/");
       result.push(res.data.image);
@@ -40,7 +40,7 @@ const createCards = (loc) => {
 
   let result = [];
 
-  for (let i = 0; i < 21; i++) {
+  for (let i = 0; i < 20; i++) {
     try {
       result.push(
         <Card
@@ -85,11 +85,11 @@ const Restaurantes = ({ navigation, route }) => {
   }
 
   return (
-    <React.Fragment>
+    <View>
       <Layout style={styles.topContainer} level="1">
         {cards}
       </Layout>
-    </React.Fragment>
+    </View>
   );
 };
 
@@ -108,10 +108,9 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    justifyContent: "space-evenly",
     margin: 10,
-    paddingHorizontal: -16,
-    minWidth: 500,
+    minWidth: 300,
+    minHeight: 400,
     maxWidth: 700,
   },
   footerContainer: {
@@ -124,8 +123,8 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: "center",
-    minWidth: 450,
-    minHeight: 200,
+    minWidth: 300,
+    minHeight: 400,
     height: "auto",
   },
 });

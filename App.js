@@ -6,6 +6,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { mapping } from "./util/mapping";
 import axios from "axios";
+import * as Permissions from "expo-permissions";
+import * as Location from "expo-location";
 import Restaurantes from "./components/Restaurantes";
 import {
   ApplicationProvider,
@@ -43,32 +45,27 @@ const HomeScreen = ({ navigation }) => {
 export default function App() {
   const [userLocation, setUserLocation] = useState(undefined);
   useEffect(() => {
-    getLoc();
+    _getLocationAsync();
   });
 
-  function getLoc() {
-    navigator.geolocation.getCurrentPosition(
-      async (data) => {
-        try {
-          const res = await axios.get(
-            "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
-              data.coords.latitude +
-              "&longitude=" +
-              data.coords.longitude +
-              "&localityLanguage=en"
-          );
-          setUserLocation(res.data.locality + ", " + res.data.countryCode);
-          console.log(res.data);
-        } catch (error) {
-          console.log("Error", error);
-        }
-      },
-      (error) => {
-        console.log("error", error);
-      },
-      []
+  const _getLocationAsync = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setUserLocation("Permission to access location was denied");
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+
+    const res = await axios.get(
+      "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
+        location.coords.latitude +
+        "&longitude=" +
+        location.coords.longitude +
+        "&localityLanguage=en"
     );
-  }
+    setUserLocation(res.data.locality + ", " + res.data.countryCode);
+  };
 
   return (
     <ApplicationProvider {...eva} customMapping={mapping} theme={eva.light}>
