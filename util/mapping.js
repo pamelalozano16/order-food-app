@@ -1,4 +1,7 @@
-export const mapping = {
+import { mapping } from "@eva-design/eva";
+
+export const customMapping = {
+  ...mapping,
   components: {
     Card: {
       appearances: {

@@ -11,11 +11,10 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const fondoRandom = () => {
-    return (Math.floor(Math.random() * 6) + 1).toString();
+    return (Math.floor(Math.random() * 7) + 1).toString();
   };
 
   const pulseIconRef = useRef();
-  const backgoundImageSrc = "../assets/fondo-" + fondoRandom() + ".jpg";
 
   useEffect(() => {
     pulseIconRef.current.startAnimation();

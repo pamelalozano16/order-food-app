@@ -6,24 +6,12 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
+  ImageBackground,
+  Platform,
 } from "react-native";
 import { Layout, Text, Card, Button, Spinner } from "@ui-kitten/components";
 import axios from "axios";
-
-const Header = (props) => (
-  <View {...props}>
-    <Text category="h6">Restaurante {props.number + 1}</Text>
-    <Text category="s1">{props.loc}</Text>
-  </View>
-);
-
-const Footer = (props) => (
-  <View {...props} style={[props.style, styles.footerContainer]}>
-    <Button style={styles.footerControl} size="small">
-      CREAR PEDIDO
-    </Button>
-  </View>
-);
+import CardHeader from "./CardHeader";
 
 const createImages = async () => {
   let result = [];
@@ -51,17 +39,29 @@ const createCards = (loc) => {
     try {
       result.push(
         <Card
-          style={styles.card}
+          style={
+            Platform.OS == "ios" || Platform.OS == "android"
+              ? { ...styles.card, minHeight: 550 }
+              : styles.card
+          }
           key={i}
-          header={Header({ number: i, loc: loc })}
-          footer={Footer}
+          appearance="filled"
         >
           {images[i] ? (
-            <Image
+            <ImageBackground
+              imageStyle={{ borderBottomRightRadius: 200 }}
               source={{ uri: images[i] }}
               resizeMode="cover"
-              style={styles.image}
-            ></Image>
+              style={
+                Platform.OS == "ios" || Platform.OS == "android"
+                  ? { ...styles.image, minHeight: 550 }
+                  : styles.image
+              }
+            >
+              <View style={styles.headerContainer}>
+                <CardHeader number={i} loc={loc} />
+              </View>
+            </ImageBackground>
           ) : (
             <Layout
               style={{
@@ -123,22 +123,28 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     minWidth: 300,
-    minHeight: 400,
+    minHeight: 450,
     maxWidth: 700,
+    borderRadius: 30,
+    borderBottomWidth: 1,
   },
-  footerContainer: {
+  headerContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",
+    borderBottomRightRadius: 200,
+    flex: 1,
+    padding: 15,
+    backgroundColor: "#4c4c4c63",
   },
-  footerControl: {
+  headerControl: {
     marginHorizontal: 2,
   },
   image: {
     flex: 1,
-    justifyContent: "center",
     minWidth: 300,
-    minHeight: 400,
+    minHeight: 450,
     height: "auto",
+    marginRight: 3,
   },
 });
 

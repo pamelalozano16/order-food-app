@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import Constants from "expo-constants";
 import * as eva from "@eva-design/eva";
 import { NavigationContainer } from "@react-navigation/native";
-import { mapping } from "./util/mapping";
+import { customMapping } from "./util/mapping";
 import axios from "axios";
 import * as Location from "expo-location";
 import Restaurantes from "./components/Restaurantes";
@@ -53,7 +53,11 @@ export default function App() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} customMapping={mapping} theme={eva.light}>
+      <ApplicationProvider
+        {...eva}
+        customMapping={customMapping}
+        theme={eva.light}
+      >
         <NavigationContainer theme={DarkTheme}>
           <Stack.Navigator
             initialRouteName="Home"
@@ -93,15 +97,7 @@ export default function App() {
               name="Restaurantes"
               component={Restaurantes}
               initialParams={{ loc: userLocation }}
-              options={
-                userLocation
-                  ? {
-                      title: "Restaurantes en " + userLocation,
-                    }
-                  : {
-                      title: "Restaurantes",
-                    }
-              }
+              options={{ title: "Restaurantes" }}
             />
           </Stack.Navigator>
         </NavigationContainer>

@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
-    "@expo/vector-icons": "^12.0.0",
+    "@expo-google-fonts/inter": "^0.2.0",
+    "@expo-google-fonts/open-sans": "^0.2.0",
+    "@expo/vector-icons": "^12.0.5",
     "@expo/webpack-config": "^0.16.7",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
@@ -20,6 +22,7 @@
     "dotenv": "^10.0.0",
     "expo": "~43.0.2",
     "expo-constants": "~12.1.3",
+    "expo-font": "^10.0.3",
     "expo-location": "^13.0.4",
     "expo-permissions": "^13.0.3",
     "expo-status-bar": "~1.1.0",
